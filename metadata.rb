@@ -4,7 +4,7 @@ maintainer_email 'adam@altispartners.com'
 license          'All rights reserved'
 description      'Installs/Configures dotnetconfig'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          '0.1.6'
+version          '0.1.7'
 
 #Cookbook dependencies - Nokogiri
 depends 	'nokogiri'
