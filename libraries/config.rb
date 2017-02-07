@@ -120,6 +120,14 @@ module DotNetConfig
 	  end
 	end
 
+	##Connection String Properties
+	def config_set_connection_string_property(document, connectionStringName, propertyName, propertyValue)
+		hash = config_get_connection_string_hash(document, connectionStringName)
+		hashList = config_set_connection_string_part(hashList, propertyName, propertyValue)
+		connectionString = config_get_connection_string_from_hash(hashList)
+		config_set_connection_string(document, connectionStringName, connectionString)
+	end
+	
 	##Hash list manipulation routines
 	def config_get_connection_string_hash(document, connectionStringName)
 	  connectionString = config_get_connection_string(document, connectionStringName)
@@ -157,11 +165,13 @@ module DotNetConfig
 	  if hashList.key?(key)
 		hashList.delete(key)
 	  end
+	  hashList
 	end
 
 	def config_set_connection_string_part(hashList, key, value)
 	  if hashList.key?(key)
 		hashList[key] = value
 	  end
+	  hashList
 	end
 end
