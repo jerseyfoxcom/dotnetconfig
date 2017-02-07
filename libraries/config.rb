@@ -23,33 +23,19 @@ module DotNetConfig
 	### Generic XML Functions
 	##Get XML file
 	def config_getxml(filename)
-	  @doc = Nokogiri::XML(File.open(filename)) do |config|
+	  doc = Nokogiri::XML(File.open(filename)) do |config|
 		config.options = Nokogiri::XML::ParseOptions::STRICT | Nokogiri::XML::ParseOptions::NOBLANKS  
 	  end
-	  @doc
+	  doc
 	end
-
-	##Get set content
-	def config_get_element_content(filename, xpathQuery)
-	  element = dotnetconfig_get_first_element(filename, xpathQuery)
-	  if !element.nil?
-		element.content
-	  else
-		nil
-	  end
+	
+	def config_writexml(document, filename)
+	  File.write(filename, document.to_xml)
 	end
-
-	def config_set_element_content(filename, xpathQuery, value)
-	  element = dotnetconfig_get_first_element(filename, xpathQuery)
-	  if !element.nil?
-		element.content = value
-	  end
-	end
-
+	
 	##Element fetching
-	def config_get_elements(filename, xpathQuery)
-	  @doc = dotnetconfig_getxml(filename)
-	  elements = @doc.xpath(xpathQuery)   
+	def config_get_elements(document, xpathQuery)
+	  elements = document.xpath(xpathQuery)   
 	  if !elements.empty?
 		elements
 	  else
@@ -57,20 +43,35 @@ module DotNetConfig
 	  end
 	end
 
-	def config_get_first_element(filename, xpathQuery)
-	  @doc = dotnetconfig_getxml(filename)
-	  elements = @doc.xpath(xpathQuery)
+	def config_get_first_element(document, xpathQuery)
+	  elements = document.xpath(xpathQuery)
 	  if !elements.empty?
 		elements.first
 	  else
 		nil
 	  end
+	end	
+
+	##Get set content
+	def config_get_element_content(document, xpathQuery)
+	  element = config_get_first_element(document, xpathQuery)
+	  if !element.nil?
+		element.content
+	  else
+		nil
+	  end
+	end
+
+	def config_set_element_content(document, xpathQuery, value)
+	  element = config_get_first_element(document, xpathQuery)
+	  if !element.nil?
+		element.content = value
+	  end
 	end
 
 	##Attribute modification
-	def config_get_by_attribute_name(filename, xpathQuery, attributeName, attributeValue)
-	  @doc = dotnetconfig_getxml(filename)
-	  elements = dotnetconfig_get_elements(filename, xpathQuery)
+	def config_get_by_attribute_name(document, xpathQuery, attributeName, attributeValue)
+	  elements = config_get_elements(document, xpathQuery)
 	  attributes = elements.xpath(%Q'//*[@#{attributeName}="#{attributeValue}"]')
 	  if !attributes.empty?
 		attributes.first
@@ -79,8 +80,8 @@ module DotNetConfig
 	  end
 	end
 
-	def config_set_attribute(filename, xpathQuery, attributeName, attributeValue, setAttributeName, setAttributeValue)
-	  attribute = dotnetconfig_get_by_attribute_name(filename, xpathQuery, attributeName, attributeValue)
+	def config_set_attribute(document, xpathQuery, attributeName, attributeValue, setAttributeName, setAttributeValue)
+	  attribute = config_get_by_attribute_name(document, xpathQuery, attributeName, attributeValue)
 	  if !attribute.nil?
 		attribute.set_attribute(setAttributeName, setAttributeValue)
 	  end
@@ -88,12 +89,12 @@ module DotNetConfig
 
 	###DotNET Specific Configuration
 	##App Settings
-	def config_set_app_setting(filename, settingName, settingValue)
-	  dotnetconfig_set_attribute(filename, '//configuration/appSettings/add', 'key', settingName, 'value', settingValue)
+	def config_set_app_setting(document, settingName, settingValue)
+	  config_set_attribute(document, '//configuration/appSettings/add', 'key', settingName, 'value', settingValue)
 	end
 
-	def config_get_app_setting(filename, settingName)
-	  element = dotnetconfig_get_by_attribute_name(filename, '//configuration/appSettings/add', 'key', settingName)
+	def config_get_app_setting(document, settingName)
+	  element = config_get_by_attribute_name(document, '//configuration/appSettings/add', 'key', settingName)
 	  if !element.nil?
 		#element.get_attribute('value')
 		element['value']
@@ -103,15 +104,15 @@ module DotNetConfig
 	end
 
 	##Full Connection Strings
-	def config_set_connection_string(filename, settingName, value)
-	  connectionString = dotnetconfig_get_connection_string(filename, settingName)
+	def config_set_connection_string(document, settingName, value)
+	  connectionString = config_get_connection_string(document, settingName)
 	  if !connectionString.nil?
-		dotnetconfig_set_attribute(filename, '//configuration/connectionStrings', 'name', settingName, 'connectionString', value)
+		config_set_attribute(document, '//configuration/connectionStrings', 'name', settingName, 'connectionString', value)
 	  end
 	end
 
-	def config_get_connection_string(filename, settingName)
-	  connectionString = dotnetconfig_get_by_attribute_name(filename, '//configuration/connectionStrings', 'name', settingName)
+	def config_get_connection_string(document, settingName)
+	  connectionString = config_get_by_attribute_name(document, '//configuration/connectionStrings', 'name', settingName)
 	  if !connectionString.nil?
 		connectionString
 	  else
@@ -120,8 +121,8 @@ module DotNetConfig
 	end
 
 	##Hash list manipulation routines
-	def config_get_connection_string_hash(filename, connectionStringName)
-	  connectionString = dotnetconfig_get_connection_string(filename, connectionStringName)
+	def config_get_connection_string_hash(document, connectionStringName)
+	  connectionString = config_get_connection_string(document, connectionStringName)
 	  if !connectionString.nil?
 		value = connectionString['connectionString']
 		array = value.split(";")
