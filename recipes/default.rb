@@ -2,7 +2,7 @@
 # Cookbook Name:: dotnetconfig
 # Recipe:: default
 #
-# Copyright 2017, YOUR_COMPANY_NAME
+# Copyright 2017, Altis Partners
 #
 # All rights reserved - Do Not Redistribute
 #
