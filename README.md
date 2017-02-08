@@ -1,21 +1,19 @@
 <h1>dotnetconfig Cookbook</h1>
-
-<h3>WORK IN PROGRESS - Currently in Alpha, feel free to test it out but don't use in production until this message is removed or we have hit V1.0.0.</h3>
-
 <h2>.NET configuration file editor. Provides functionality to update a .NET app / web configuration file with values from a chef run.</h2>
 
-<h4>Open the file for editing, non locking</h4>
+<p>WORK IN PROGRESS - Currently in Alpha, feel free to test it out but don't use in production until this message is removed or we have hit V1.0.0.</p>
+
+<h3>Open the file for editing, non locking</h3>
 ```ruby
 documentPath = 'C:\\Config\\' + 'app.config'
 document = config_getxml(documentPath)
 ```
 
 <h3>Set app settings within the config file</h3>
-<p>Arguments: 
-  Document: Pass document which was fetched from config_getxml
-  SettingName: The setting to update
-  SettingValue: The new value to apply to the configuration
-</p>
+<p>Arguments:</p>
+<p>  Document: Pass document which was fetched from config_getxml</p>
+<p>  SettingName: The setting to update</p>
+<p>  SettingValue: The new value to apply to the configuration</p>
 
 ```ruby
 config_set_app_setting(document, 'fix-gateways', 'Replaced')
@@ -38,7 +36,7 @@ config_set_app_setting(document, 'fix-service-test-file-name', 'Edit6')
 </custom>
 ```
 
-<h4>This block would find the first occurrence of the 'custom' element and set the content of each of its elements to a new value.</h4>
+<p>This block would find the first occurrence of the 'custom' element and set the content of each of its elements to a new value.</p>
 ```ruby
 config_set_element_content(document, '//configuration/custom/user', 'Edit8')
 config_set_element_content(document, '//configuration/custom/password', 'Edit9')
@@ -47,7 +45,7 @@ config_set_element_content(document, '//configuration/custom/port', 'Edit11')
 ```
 
 <h3>Setting the content of a specific element using xPath</h3>
-<h4>This would find the first log4net appender called MyAppender</h4>
+<p>This would find the first log4net appender called MyAppender</p>
 ```ruby
 config_set_element_content(document, '//configuration/log4net/appender[@name="MyAppender"]/hostName', 'NewValue1')
 config_set_element_content(document, '//configuration/log4net/appender[@name="MyAppender"]/userName', 'NewValue2')
