@@ -123,7 +123,7 @@ module DotNetConfig
 	##Connection String Properties
 	def config_set_connection_string_property(document, connectionStringName, propertyName, propertyValue)
 		hash = config_get_connection_string_hash(document, connectionStringName)
-		hashList = config_set_connection_string_part(hashList, propertyName, propertyValue)
+		hashList = config_set_connection_string_part(hash, propertyName, propertyValue)
 		connectionString = config_get_connection_string_from_hash(hashList)
 		config_set_connection_string(document, connectionStringName, connectionString)
 	end
