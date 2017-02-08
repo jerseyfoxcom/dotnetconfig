@@ -39,6 +39,7 @@ Set an element's content using an xPath query, Example:
 ```
 
 This block would find the first occurrence of the 'custom' element and set the content of each of its elements to a new value.
+
 ```ruby
 config_set_element_content(document, '//configuration/custom/user', 'Edit8')
 config_set_element_content(document, '//configuration/custom/password', 'Edit9')
@@ -48,6 +49,7 @@ config_set_element_content(document, '//configuration/custom/port', 'Edit11')
 
 ##Setting the content of a specific element using xPath
 This would find the first log4net appender called MyAppender
+
 ```ruby
 config_set_element_content(document, '//configuration/log4net/appender[@name="MyAppender"]/hostName', 'NewValue1')
 config_set_element_content(document, '//configuration/log4net/appender[@name="MyAppender"]/userName', 'NewValue2')
@@ -55,17 +57,20 @@ config_set_element_content(document, '//configuration/log4net/appender[@name="My
 ```
 
 ##Connection strings
+
 Set the the entire content of a connection string
 ```ruby
 config_set_connection_string(document, 'Database1', 'Database=Partial;User Id=Replacement;Password=PasswordChanged;CommandTimeout=30;MinPoolSize=0')
 ```
 
 Set an individual property within a connection string
+
 ```ruby
 config_set_connection_string_property(document, 'Database2', 'password', 'NewValue123654')
 ```
 
 Saving changes made to the file
+
 ```ruby
 config_writexml(document, outputPath)
 ```
